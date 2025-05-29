@@ -19,6 +19,8 @@
 	var/uses_skin_color = FALSE
 	/// Where the genital is actually located, for clothing checks.
 	var/genital_location = GROIN
+	///Used for handling hyper sprites
+	var/hyper_sprite_suffix = null
 
 //This translates the float size into a sprite string
 /obj/item/organ/genital/proc/get_sprite_size_string()
@@ -202,6 +204,7 @@
 		return "[LOWER_TEXT(sheath)]_[poking_out]"
 
 	var/size_affix
+	var/hyper_size_affix
 	var/measured_size = FLOOR(genital_size,1)
 	var/is_erect = 0
 	if(aroused == AROUSAL_FULL)
@@ -217,9 +220,18 @@
 			size_affix = "3"
 		else
 			size_affix = "4"
+			switch(measured_size)
+				if(38 to 47)
+					hyper_size_affix = "5"
+				if(48 to 59)
+					hyper_size_affix = "6"
+				else
+					hyper_size_affix = "7"
 	var/passed_string = "[genital_type]_[size_affix]_[is_erect]"
 	if(uses_skintones)
 		passed_string += "_s"
+	if(hyper_size_affix)
+		hyper_sprite_suffix = "[genital_type]_[hyper_size_affix]_[is_erect][uses_skintones ? "_s" : ""]"
 	return passed_string
 
 /obj/item/organ/genital/penis/build_from_dna(datum/dna/DNA, associated_key)

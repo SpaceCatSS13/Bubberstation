@@ -9,6 +9,7 @@
 	var/genital_location = GROIN
 
 /datum/sprite_accessory/genital/is_hidden(mob/living/carbon/human/target_mob)
+	target_mob.remove_alt_appearance("hyper_penis")
 	var/obj/item/organ/genital/badonkers = target_mob.get_organ_slot(associated_organ_slot)
 	if(!badonkers)
 		return TRUE
@@ -55,6 +56,21 @@
 		else
 			return TRUE
 
+/datum/sprite_accessories/genital/proc/genital_layertext(layer)
+	switch(layer)
+		if(-BODY_BEHIND_LAYER)
+			return "BEHIND"
+		if(-BODY_ADJ_LAYER)
+			return "ADJ"
+		if(-BODY_FRONT_LAYER)
+			return "FRONT"
+		if(-BODY_FRONT_UNDER_CLOTHES)
+			return "FRONT_UNDER"
+		if(-ABOVE_BODY_FRONT_HEAD_LAYER)
+			return "FRONT_OVER"
+		if(-HEAD_LAYER)
+			return "FRONT_OVER_HAIR"
+
 /datum/sprite_accessory/genital/penis
 	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/genitals/penis_onmob.dmi'
 	organ_type = /obj/item/organ/genital/penis
@@ -69,10 +85,14 @@
 	genetic = TRUE
 	var/can_have_sheath = TRUE
 
-/datum/sprite_accessory/genital/penis/get_special_icon(mob/living/carbon/human/target_mob)
+/datum/sprite_accessory/genital/penis/get_special_icon(mob/living/carbon/human/target_mob, passed_state)
 	var/taur_mode = target_mob?.get_taur_mode()
 
 	if(!taur_mode || !target_mob.dna.features["penis_taur_mode"] || taur_mode & STYLE_TAUR_SNAKE)
+		var/obj/item/organ/genital/penis/penis_ref = target_mob.get_organ_slot(associated_organ_slot)
+		if(penis_ref?.hyper_sprite_suffix)
+			target_mob.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/one_person, "hyper_penis", image(icon = icon, icon_state = "m_penis_[penis_ref.hyper_sprite_suffix]_FRONT_primary", loc = target_mob), null, target_mob)
+
 		return icon
 
 	return 'modular_skyrat/master_files/icons/mob/sprite_accessory/genitals/taur_penis_onmob.dmi'
@@ -143,7 +163,7 @@
 	genetic = TRUE
 	var/has_size = TRUE
 
-/datum/sprite_accessory/genital/testicles/get_special_icon(mob/living/carbon/human/target_mob)
+/datum/sprite_accessory/genital/testicles/get_special_icon(mob/living/carbon/human/target_mob, passed_state)
 	var/taur_mode = target_mob?.get_taur_mode()
 
 	if(!taur_mode || !target_mob.dna.features["penis_taur_mode"] || taur_mode & STYLE_TAUR_SNAKE)
